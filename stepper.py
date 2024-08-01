@@ -3,10 +3,10 @@ import time
  
 GPIO.setmode(GPIO.BCM)  # means you need to use BCM GPIO named system, you can use pinout command to get the pin's number information in command line.
 GPIO.setwarnings(False)
-coil_A_1_pin = 4 # pink - GPIO 4
-coil_A_2_pin = 17 # orange - GPIO 17
-coil_B_1_pin = 23 # blue - GPIO 23
-coil_B_2_pin = 24 # yellow -GPIO 24
+coil_A_1_pin = 14 # pink - GPIO 4
+coil_A_2_pin = 15 # orange - GPIO 17
+coil_B_1_pin = 18 # blue - GPIO 23
+coil_B_2_pin = 23 # yellow -GPIO 24
  
 # adjust if different
 StepCount = 8
