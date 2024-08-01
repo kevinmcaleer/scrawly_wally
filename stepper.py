@@ -1,55 +1,51 @@
-import RPi.GPIO as GPIO
-import time
- 
-GPIO.setmode(GPIO.BCM)  # means you need to use BCM GPIO named system, you can use pinout command to get the pin's number information in command line.
-GPIO.setwarnings(False)
-coil_A_1_pin = 14 # pink - GPIO 4
-coil_A_2_pin = 15 # orange - GPIO 17
-coil_B_1_pin = 18 # blue - GPIO 23
-coil_B_2_pin = 23 # yellow -GPIO 24
- 
-# adjust if different
-StepCount = 8
-Seq = range(0, StepCount)
-Seq[0] = [0,1,0,0]
-Seq[1] = [0,1,0,1]
-Seq[2] = [0,0,0,1]
-Seq[3] = [1,0,0,1]
-Seq[4] = [1,0,0,0]
-Seq[5] = [1,0,1,0]
-Seq[6] = [0,0,1,0]
-Seq[7] = [0,1,1,0]
- 
-GPIO.setup(enable_pin, GPIO.OUT)
-GPIO.setup(coil_A_1_pin, GPIO.OUT)
-GPIO.setup(coil_A_2_pin, GPIO.OUT)
-GPIO.setup(coil_B_1_pin, GPIO.OUT)
-GPIO.setup(coil_B_2_pin, GPIO.OUT)
- 
-GPIO.output(enable_pin, 1)
- 
-def setStep(w1, w2, w3, w4):
-    GPIO.output(coil_A_1_pin, w1)
-    GPIO.output(coil_A_2_pin, w2)
-    GPIO.output(coil_B_1_pin, w3)
-    GPIO.output(coil_B_2_pin, w4)
- 
-def forward(delay, steps):
-    for i in range(steps):
-        for j in range(StepCount):
-            setStep(Seq[j][0], Seq[j][1], Seq[j][2], Seq[j][3])
-            time.sleep(delay)
- 
-def backwards(delay, steps):
-    for i in range(steps):
-        for j in reversed(range(StepCount)):
-            setStep(Seq[j][0], Seq[j][1], Seq[j][2], Seq[j][3])
-            time.sleep(delay)
- 
-if __name__ == '__main__':
-    while True:
-        delay = raw_input("Time Delay (ms)?")
-        steps = raw_input("How many steps forward? ")
-        forward(int(delay) / 1000.0, int(steps))
-        steps = raw_input("How many steps backwards? ")
-        backwards(int(delay) / 1000.0, int(steps))
+from gpiozero import OutputDevice
+from time import sleep
+
+# Define the GPIO pins for the stepper motor
+coil_a_1_pin = 14
+coil_a_2_pin = 15
+coil_b_1_pin = 18
+coil_b_2_pin = 23
+
+# Initialize the pins
+coil_a_1 = OutputDevice(coil_a_1_pin)
+coil_a_2 = OutputDevice(coil_a_2_pin)
+coil_b_1 = OutputDevice(coil_b_1_pin)
+coil_b_2 = OutputDevice(coil_b_2_pin)
+
+# Define the step sequence
+step_sequence = [
+    (1, 0, 1, 0),
+    (0, 1, 1, 0),
+    (0, 1, 0, 1),
+    (1, 0, 0, 1)
+]
+
+def set_step(w1, w2, w3, w4):
+    coil_a_1.value = w1
+    coil_a_2.value = w2
+    coil_b_1.value = w3
+    coil_b_2.value = w4
+
+def stepper_test(delay, steps):
+    for _ in range(steps):
+        for step in step_sequence:
+            set_step(*step)
+            sleep(delay)
+
+def main():
+    try:
+        while True:
+            print("Rotating forward...")
+            stepper_test(0.01, 512)  # Rotate forward 512 steps
+            sleep(1)
+            print("Rotating backward...")
+            stepper_test(0.01, -512)  # Rotate backward 512 steps
+            sleep(1)
+    except KeyboardInterrupt:
+        print("Test stopped by user")
+        # Clean up by setting all pins to low
+        set_step(0, 0, 0, 0)
+
+if __name__ == "__main__":
+    main()
