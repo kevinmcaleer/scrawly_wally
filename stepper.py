@@ -1,6 +1,8 @@
 from gpiozero import OutputDevice
 from time import sleep
 
+SPEED = 0.005 # Delay between steps
+
 # Define the GPIO pins for the stepper motor
 coil_a_1_pin = 14  # IN1
 coil_a_2_pin = 15  # IN2
@@ -45,10 +47,10 @@ def main():
     try:
         while True:
             print("Rotating forward...")
-            stepper_test(0.01, 512, direction=1)  # Rotate forward 512 steps
+            stepper_test(SPEED, 512, direction=1)  # Rotate forward 512 steps
             sleep(1)
             print("Rotating backward...")
-            stepper_test(0.01, 512, direction=-1)  # Rotate backward 512 steps
+            stepper_test(SPEED, 512, direction=-1)  # Rotate backward 512 steps
             sleep(1)
     except KeyboardInterrupt:
         print("Test stopped by user")
