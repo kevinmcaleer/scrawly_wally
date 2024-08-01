@@ -1,7 +1,7 @@
 from gpiozero import OutputDevice
 from time import sleep
 
-SPEED = 0.005 # Delay between steps
+SPEED = 0.0005 # Delay between steps
 
 # Define the GPIO pins for the stepper motor
 coil_a_1_pin = 14  # IN1
