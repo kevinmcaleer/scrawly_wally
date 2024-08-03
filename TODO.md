@@ -1,0 +1,1 @@
+- [ ] Write `control.py` to draw a simple test image
